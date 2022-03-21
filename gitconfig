@@ -1,5 +1,6 @@
 [alias]
 	aa = add -A .
+	ap = add --patch
 	st = status
 	ci = commit
 	co = checkout
@@ -25,7 +26,7 @@
 [color]
 	ui = auto
 [core]
-	excludesfile = ~/.cvsignore
+	excludesfile = /Users/jason/.gitignore_global
 	editor = vim
 	whitespace = warn
 [help]

@@ -7,7 +7,6 @@ endif
 call plug#begin()
 
 Plug 'slashmili/alchemist.vim'
-Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'tpope/vim-apathy'
 Plug 'tpope/vim-bundler'
 Plug 'tpope/vim-commentary'
@@ -28,6 +27,10 @@ Plug 'junegunn/fzf.vim'
 Plug 'KeitaNakamura/neodark.vim'
 Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'altercation/vim-colors-solarized'
+Plug 'slashmili/alchemist.vim'
+Plug 'elixir-editors/vim-elixir'
+Plug 'vim-test/vim-test'
+Plug 'jgdavey/tslime.vim'
 
 call plug#end()
 
@@ -77,7 +80,6 @@ set rtp+=$GOROOT/misc/vim
 filetype plugin indent on
 " End go stuff
 
-autocmd BufWritePre *.js Neoformat
 map <leader>int viw<c-c>a}<c-c>Bi#{<c-c>
 "Insert Fat Arrow/Hashrocket
 map <leader>hr a=><space>
@@ -89,8 +91,8 @@ let g:rainbow_active = 1
 let g:markdown_fenced_languages = ['html', 'vim', 'ruby', 'python', 'zsh=sh', 'elixir', 'clojure', 'javascript', 'go']
 
 set nolist
-iabbrev epry require IEx; IEx.pry
-iabbrev bpry require 'pry'; binding.pry
+iabbrev edebug require IEx; IEx.pry
+iabbrev bpry binding.break
 
 "highlight trailing whitespace
 match ErrorMsg '\s\+$'
@@ -138,12 +140,6 @@ nnoremap <leader>E :call Send_to_Tmux("mix test  ".expand("%").":".line(".")."\n
 nnoremap <leader>s :call Send_to_Tmux("iex -S mix test  ".expand("%")."\n")<CR>
 nnoremap <leader>S :call Send_to_Tmux("iex -S mix test  ".expand("%").":".line(".")."\n")<CR>ndfunction
 
-augroup NeoformatAutoFormat
-  autocmd!
-  autocmd FileType javascript,javascript.jsx setlocal formatprg=prettier\ --stdin\ --print-width\ 80\ --single-quote\ --trailing-comma\ es5
-  autocmd BufWritePre *.js,*.jsx Neoformat
-augroup END
-
 set nu
 set visualbell
 
@@ -166,4 +162,28 @@ augroup vimrc
 augroup END
 
 set rtp+=/usr/local/opt/fzf
+set foldmethod=indent
+set foldlevel=99
 
+au BufRead,BufNewFile *.py,*.pyw,*.c,*.h match BadWhitespace /\s\+$/
+au BufRead,BufNewFile *.thor set filetype=ruby
+au BufNewFile,BufRead *.py
+    \ set tabstop=4
+    \ set softtabstop=4
+    \ set shiftwidth=4
+    \ set textwidth=79
+    \ set expandtab
+    \ set autoindent
+    \ set fileformat=unix
+
+" vim-test
+nmap <silent> <leader>t :TestNearest<CR>
+nmap <silent> <leader>T :TestFile<CR>
+nmap <silent> <leader>a :TestSuite<CR>
+nmap <silent> <leader>l :TestLast<CR>
+nmap <silent> <leader>g :TestVisit<CR>
+
+let test#strategy = "tslime"
+let g:tslime_always_current_session = 1
+let g:tslime_always_current_window = 1
+let g:tslime_autoset_pane = 1
